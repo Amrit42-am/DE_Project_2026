@@ -5,3 +5,4 @@ Thumbs.db
 # Seed data CSV files (unzipped locally, seed_data.zip is tracked)
 seed_data/
 *.csv
+
