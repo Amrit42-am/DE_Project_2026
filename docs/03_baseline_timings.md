@@ -1,180 +1,205 @@
-# Phase 3 – Baseline Execution Timings (Checkpoint 2)
+# CP2 – Baseline Timings
 
-**Project:** BookMyShow Movie & Event Ticketing Database  
-**Team:** T0112 | **Lead:** Vansh Kumar | **Date:** November 2026  
-**Database:** PostgreSQL 15+
+## 1. Overview
 
----
+This document records the baseline performance of the BookMyShow database before applying query optimizations or adding performance indexes.
 
-## 1. Overview & Setup
+The benchmark was performed on the `bookmyshow` database using the provided 30-query workload:
 
-Baseline performance benchmarks were conducted across all 30 standard queries (`R01` through `R25` and `W01` through `W05`) using the provided benchmarking harness:
+- 25 read queries (R01–R25)
+- 5 write queries (W01–W05)
+- Each query was executed 3 times.
+- Query execution plans were collected using `EXPLAIN (ANALYZE, BUFFERS)`.
+
+The purpose of this benchmark is to understand the current query performance and identify queries that may need optimization in CP3.
+
+## 2. Database and Benchmark Environment
+
+| Item | Details |
+|---|---|
+| Database | bookmyshow |
+| Schema | bms |
+| PostgreSQL server | 18.6 |
+| psql client | 15.20 (Homebrew) |
+| Total tables | 11 |
+| Total rows | 778,048 |
+| Read queries | 25 |
+| Write queries | 5 |
+| Runs per query | 3 |
+| Benchmark phase | baseline |
+| Benchmark date | 17 November 2026 |
+
+**Version note:** The PostgreSQL client version (15.20) differs from the server version (18.6). The client displayed a version warning, but the benchmark completed successfully.
+
+## 3. Benchmark Method
+
+The benchmark was executed using the provided benchmark script:
+
 ```bash
-./benchmarks/run_benchmark.sh capstone baseline
+./benchmarks/run_benchmark.sh bookmyshow baseline
 ```
-Each query was executed 3 times using `EXPLAIN (ANALYZE, BUFFERS)`. Write queries (`W01`–`W05`) were wrapped in `BEGIN ... ROLLBACK` transactions to prevent state mutation.
 
----
+The script executed the provided workload file:
 
-## 2. Baseline Timing Table
+```text
+queries/workload_30.sql
+```
 
-| SQL Query | Type | Run 1 (ms) | Run 2 (ms) | Run 3 (ms) | Average (ms) |
+Each query was executed three times. The benchmark script recorded the average, median, minimum and maximum execution times, along with the scan nodes found in the execution plans.
+
+The write queries were executed inside transactions and rolled back, so the benchmark did not permanently change the database records.
+
+## 4. Baseline Timing Results
+
+All execution times are in milliseconds (ms).
+
+| Query | Type | Average (ms) | Median (ms) | Minimum (ms) | Maximum (ms) |
 |---|---|---:|---:|---:|---:|
-| R01: Home page: movies showing in Bengaluru on 2 July 2026 and how many shows each has | READ | 8.550 | 4.878 | 5.003 | 6.144 |
-| R02: Showtimes page: shows of movie 2 in Bengaluru on 2 July 2026, grouped by cinema | READ | 4.733 | 4.212 | 4.212 | 4.386 |
-| R03: Seat layout: every seat of show 144446 and whether it is already sold | READ | 0.326 | 0.333 | 0.283 | 0.314 |
-| R04: Support: open a booking by its code | READ | 0.053 | 0.032 | 0.030 | 0.038 |
-| R05: "My bookings": customer 1331's upcoming confirmed shows | READ | 9.671 | 8.575 | 8.028 | 8.758 |
-| R06: Search: movies whose title contains "kalki" | READ | 0.147 | 0.140 | 0.144 | 0.144 |
-| R07: Cinema dashboard: occupancy of every show at venue 11 on 28 June 2026 | READ | 1.024 | 0.921 | 0.959 | 0.968 |
-| R08: Box office: top 10 movies by collections over the weekend of 26–28 June 2026 | READ | 14.536 | 14.327 | 14.043 | 14.302 |
-| R09: Seat-lock service: bookings still PENDING more than 10 minutes after they were made (checked at 23:59, 30 Jun 2026) | READ | 6.679 | 6.421 | 6.241 | 6.447 |
-| R10: Cinema operations: consecutive shows on the same screen with less than 30 minutes for cleaning (June 2026) | READ | 270.207 | 266.752 | 271.489 | 269.483 |
-| R11: Revenue mix: share of ticket revenue from recliner seats, per screen type | READ | 56.961 | 54.169 | 51.808 | 54.313 |
-| R12: Fans: customers who booked the same movie more than once | READ | 102.894 | 80.309 | 79.906 | 87.703 |
-| R13: Partnerships: offers that have never been redeemed | READ | 14.401 | 13.970 | 13.901 | 14.091 |
-| R14: Movie pages: average user rating of 2026 releases with at least 20 reviews | READ | 5.682 | 5.314 | 5.432 | 5.476 |
-| R15: Capacity planning: bookings by weekday and hour of booking | READ | 41.008 | 39.229 | 38.783 | 39.673 |
-| R16: Cinema partners: cancellation rate per venue for June 2026 shows | READ | 22.448 | 22.428 | 22.563 | 22.480 |
-| R17: Cinema operations: seats of screen 101 that were never sold for any June 2026 show | READ | 35.613 | 37.067 | 36.111 | 36.264 |
-| R18: Regional insights: collections per language per city in 2026 | READ | 72.742 | 69.839 | 69.898 | 70.826 |
-| R19: Distributor report: tickets sold for every June 2026 show of movie 2 | READ | 255.421 | 248.586 | 267.361 | 257.123 |
-| R20: Finance: daily collections and running total for June 2026 | READ | 17.732 | 18.386 | 17.875 | 17.998 |
-| R21: Loyalty: 20 customers with the most confirmed bookings in 2026 | READ | 53.079 | 53.149 | 52.812 | 53.013 |
-| R22: Support console: all bookings, newest first, page 4,001 (25 per page) | READ | 47.144 | 44.252 | 45.657 | 45.684 |
-| R23: Sign-in with mobile number | READ | 0.039 | 0.027 | 0.030 | 0.032 |
-| R24: Pricing: average price paid per seat class in each city (2026) | READ | 63.764 | 66.177 | 63.734 | 64.558 |
-| R25: Programming: average occupancy of late-night shows (starting 22:30 or later) in June 2026 | READ | 25.827 | 26.585 | 28.390 | 26.934 |
-| W01: Checkout: create a PENDING booking for 2 tickets of show 144446 | WRITE | 0.836 | 0.769 | 0.813 | 0.806 |
-| W02: Seat lock: the oldest PENDING booking adds 2 more seats (the unsold seats with the lowest ids in its show) | WRITE | 11.119 | 10.718 | 10.426 | 10.754 |
-| W03: Payment callback: confirm the oldest PENDING booking | WRITE | 0.871 | 0.741 | 0.774 | 0.795 |
-| W04: Seat-lock expiry: release seats held by PENDING bookings older than 10 minutes | WRITE | 26.592 | 26.190 | 25.720 | 26.167 |
-| W05: Pricing: 10% higher prices for all July weekend shows of movie 2 | WRITE | 6.175 | 5.942 | 5.787 | 5.968 |
-| **Total (sum of all 30)** | | **1176.274** | **1130.438** | **1148.213** | **1151.642** |
+| R01 | READ | 6.144 | 5.003 | 4.878 | 8.550 |
+| R02 | READ | 4.386 | 4.212 | 4.212 | 4.733 |
+| R03 | READ | 0.314 | 0.326 | 0.283 | 0.333 |
+| R04 | READ | 0.038 | 0.032 | 0.030 | 0.053 |
+| R05 | READ | 8.758 | 8.575 | 8.028 | 9.671 |
+| R06 | READ | 0.144 | 0.144 | 0.140 | 0.147 |
+| R07 | READ | 0.968 | 0.959 | 0.921 | 1.024 |
+| R08 | READ | 14.302 | 14.327 | 14.043 | 14.536 |
+| R09 | READ | 6.447 | 6.421 | 6.241 | 6.679 |
+| R10 | READ | 269.483 | 270.207 | 266.752 | 271.489 |
+| R11 | READ | 54.313 | 54.169 | 51.808 | 56.961 |
+| R12 | READ | 87.703 | 80.309 | 79.906 | 102.894 |
+| R13 | READ | 14.091 | 13.970 | 13.901 | 14.401 |
+| R14 | READ | 5.476 | 5.432 | 5.314 | 5.682 |
+| R15 | READ | 39.673 | 39.229 | 38.783 | 41.008 |
+| R16 | READ | 22.480 | 22.448 | 22.428 | 22.563 |
+| R17 | READ | 36.264 | 36.111 | 35.613 | 37.067 |
+| R18 | READ | 70.826 | 69.898 | 69.839 | 72.742 |
+| R19 | READ | 257.123 | 255.421 | 248.586 | 267.361 |
+| R20 | READ | 17.998 | 17.875 | 17.732 | 18.386 |
+| R21 | READ | 53.013 | 53.079 | 52.812 | 53.149 |
+| R22 | READ | 45.684 | 45.657 | 44.252 | 47.144 |
+| R23 | READ | 0.032 | 0.030 | 0.027 | 0.039 |
+| R24 | READ | 64.558 | 63.764 | 63.734 | 66.177 |
+| R25 | READ | 26.934 | 26.585 | 25.827 | 28.390 |
+| W01 | WRITE | 0.806 | 0.813 | 0.769 | 0.836 |
+| W02 | WRITE | 10.754 | 10.718 | 10.426 | 11.119 |
+| W03 | WRITE | 0.795 | 0.774 | 0.741 | 0.871 |
+| W04 | WRITE | 26.167 | 26.190 | 25.720 | 26.592 |
+| W05 | WRITE | 5.968 | 5.942 | 5.787 | 6.175 |
 
----
+## 5. Execution Plan Observations
 
-## 3. Query Plan Analysis & Scan Types
+The following table records the scan nodes reported by the benchmark for each query.
 
-Below is the scan breakdown and performance explanation for all 30 queries on the unindexed schema:
+| Query | Observed scan nodes |
+|---|---|
+| R01 | Index Scan on movies; Seq Scan on screens and venues; Index Scan on shows |
+| R02 | Seq Scan on screens and venues; Index Scan on shows |
+| R03 | Index Scan on shows and seats; Index Only Scan on booking_seats |
+| R04 | Index Scan on bookings |
+| R05 | Seq Scan on bookings, movies, screens and venues; Index Scan on shows |
+| R06 | Seq Scan on movies |
+| R07 | Index Scan on screens; Bitmap Heap Scan and Bitmap Index Scan on shows; Index Only Scan on booking_seats |
+| R08 | Seq Scan on bookings, shows and movies |
+| R09 | Seq Scan on bookings |
+| R10 | Seq Scan on shows |
+| R11 | Seq Scan on booking_seats, seats and screens |
+| R12 | Seq Scan on shows and bookings |
+| R13 | Seq Scan on offers and bookings |
+| R14 | Seq Scan on movie_reviews and movies |
+| R15 | Seq Scan on bookings |
+| R16 | Seq Scan on bookings, shows, screens and venues |
+| R17 | Seq Scan on booking_seats and shows; Index Scan on seats |
+| R18 | Seq Scan on bookings, shows, movies, screens and venues |
+| R19 | Seq Scan on shows; Index Scan on bookings |
+| R20 | Seq Scan on bookings |
+| R21 | Seq Scan on bookings |
+| R22 | Seq Scan on bookings |
+| R23 | Index Scan on customers |
+| R24 | Seq Scan on booking_seats, seats, screens and venues |
+| R25 | Seq Scan on booking_seats, shows and screens |
+| W01 | No scan node reported |
+| W02 | Index Scan on bookings, seats and shows; Index Only Scan on bookings and booking_seats |
+| W03 | Index Scan on bookings |
+| W04 | Seq Scan on booking_seats and bookings |
+| W05 | Seq Scan on shows |
 
-### R01: Home page: movies showing in Bengaluru on 2 July 2026 and how many shows each has
-- **Scan Nodes:** `Index Scan using movies_pkey on movies | Seq Scan on screens | Seq Scan on venues | Index Scan using no_overlapping_shows on shows`
-- **Why it is fast/slow:** Uses Index Scan on movies primary key, but requires Sequential Scans on screens and venues before joining with shows.
+## 6. Main Observations
 
-### R02: Showtimes page: shows of movie 2 in Bengaluru on 2 July 2026, grouped by cinema
-- **Scan Nodes:** `Seq Scan on screens | Seq Scan on venues | Index Scan using no_overlapping_shows on shows`
-- **Why it is fast/slow:** Filter by city and cinema name requires Sequential Scans across venues and screens due to lack of composite city/venue indexes.
+### 6.1 Slow read queries
 
-### R03: Seat layout: every seat of show 144446 and whether it is already sold
-- **Scan Nodes:** `Index Scan using shows_pkey on shows | Index Scan using uq_screen_seat_position on seats | Index Only Scan using pk_booking_seats on booking_seats`
-- **Why it is fast/slow:** Fast retrieval using Primary Key on shows and unique index on screen seats, reading sold seats via Index Only Scan on pk_booking_seats.
+The slowest read queries based on average execution time were:
 
-### R04: Support: open a booking by its code
-- **Scan Nodes:** `Index Scan using bookings_booking_code_key on bookings`
-- **Why it is fast/slow:** Near instantaneous (<0.05 ms) because booking_code has a UNIQUE B-Tree index constraint.
+| Query | Average execution time |
+|---|---:|
+| R10 | 269.483 ms |
+| R19 | 257.123 ms |
+| R12 | 87.703 ms |
+| R18 | 70.826 ms |
+| R24 | 64.558 ms |
+| R11 | 54.313 ms |
 
-### R05: "My bookings": customer 1331's upcoming confirmed shows
-- **Scan Nodes:** `Seq Scan on bookings | Index Scan using shows_pkey on shows | Seq Scan on movies | Seq Scan on screens | Seq Scan on venues`
-- **Why it is fast/slow:** Sequential Scan on bookings table filtering by customer_id=1331 causes slow performance; missing index on bookings(customer_id).
+R10 and R19 have the highest average execution times. Both use sequential scans on the `shows` table.
 
-### R06: Search: movies whose title contains "kalki"
-- **Scan Nodes:** `Seq Scan on movies`
-- **Why it is fast/slow:** Requires full Sequential Scan on movies table to match ILIKE pattern '%kalki%'; lacks trigram (pg_trgm) GIN index.
+R12 also takes a relatively long time and performs sequential scans on both `shows` and `bookings`.
 
-### R07: Cinema dashboard: occupancy of every show at venue 11 on 28 June 2026
-- **Scan Nodes:** `Index Scan using uq_venue_screen on screens | Bitmap Heap Scan on shows | Bitmap Index Scan on no_overlapping_shows | Index Only Scan using pk_booking_seats on booking_seats`
-- **Why it is fast/slow:** Uses index on venue_screen and bitmap index scan on no_overlapping_shows; reasonable speed for single venue.
+These queries are good candidates for further investigation during CP3.
 
-### R08: Box office: top 10 movies by collections over the weekend of 26–28 June 2026
-- **Scan Nodes:** `Seq Scan on bookings | Seq Scan on shows | Seq Scan on movies`
-- **Why it is fast/slow:** Aggregating weekend box office collections requires heavy Sequential Scans on bookings, shows, and movies tables.
+### 6.2 Fast read queries
 
-### R09: Seat-lock service: bookings still PENDING more than 10 minutes after they were made (checked at 23:59, 30 Jun 2026)
-- **Scan Nodes:** `Seq Scan on bookings`
-- **Why it is fast/slow:** Sequential Scan across all bookings checking status = 'PENDING' and timestamp; needs partial index on status = 'PENDING'.
+The fastest read queries were:
 
-### R10: Cinema operations: consecutive shows on the same screen with less than 30 minutes for cleaning (June 2026)
-- **Scan Nodes:** `Seq Scan on shows`
-- **Why it is fast/slow:** Takes ~270 ms (the longest baseline query) due to self-joining shows with a sequential scan on 144k+ rows to detect cleaning time overlaps.
+| Query | Average execution time |
+|---|---:|
+| R23 | 0.032 ms |
+| R04 | 0.038 ms |
+| R06 | 0.144 ms |
+| R03 | 0.314 ms |
+| R07 | 0.968 ms |
 
-### R11: Revenue mix: share of ticket revenue from recliner seats, per screen type
-- **Scan Nodes:** `Seq Scan on booking_seats | Seq Scan on seats | Seq Scan on screens`
-- **Why it is fast/slow:** Sequential scans across booking_seats and seats tables for recliner revenue calculations; needs composite foreign key index.
+R04 and R23 use index scans for their lookups. R03 uses index scans and an index-only scan.
 
-### R12: Fans: customers who booked the same movie more than once
-- **Scan Nodes:** `Seq Scan on shows | Seq Scan on bookings`
-- **Why it is fast/slow:** Customer repeat booking analysis performs full Sequential Scan on shows and bookings with multiple group-by passes.
+R06 performs a sequential scan on the `movies` table, but its execution time is still very low.
 
-### R13: Partnerships: offers that have never been redeemed
-- **Scan Nodes:** `Seq Scan on offers | Seq Scan on bookings`
-- **Why it is fast/slow:** Sequential Scan on offers and bookings to compute anti-join for unredeemed promo codes.
+### 6.3 Write query observations
 
-### R14: Movie pages: average user rating of 2026 releases with at least 20 reviews
-- **Scan Nodes:** `Seq Scan on movie_reviews | Seq Scan on movies`
-- **Why it is fast/slow:** Sequential Scan across movie_reviews and movies calculating average ratings with minimum review threshold.
+Among the write queries, W04 has the highest average execution time at 26.167 ms. Its execution plan contains sequential scans on `booking_seats` and `bookings`.
 
-### R15: Capacity planning: bookings by weekday and hour of booking
-- **Scan Nodes:** `Seq Scan on bookings`
-- **Why it is fast/slow:** Sequential Scan on bookings extracting weekday and hour components from booked_at timestamps.
+W02 takes 10.754 ms and uses several index scans and index-only scans.
 
-### R16: Cinema partners: cancellation rate per venue for June 2026 shows
-- **Scan Nodes:** `Seq Scan on bookings | Seq Scan on shows | Seq Scan on screens | Seq Scan on venues`
-- **Why it is fast/slow:** Sequential Scan on bookings and shows computing cancellation rates by venue for June 2026.
+W01 and W03 are the fastest write queries, with average execution times below 1 ms.
 
-### R17: Cinema operations: seats of screen 101 that were never sold for any June 2026 show
-- **Scan Nodes:** `Seq Scan on booking_seats | Seq Scan on shows | Index Scan using uq_screen_seat_position on seats`
-- **Why it is fast/slow:** NOT EXISTS anti-join filtering unsold seats for screen 101 over June shows requires scanning shows and booking_seats.
+### 6.4 Sequential scans and index scans
 
-### R18: Regional insights: collections per language per city in 2026
-- **Scan Nodes:** `Seq Scan on bookings | Seq Scan on shows | Seq Scan on movies | Seq Scan on screens | Seq Scan on venues`
-- **Why it is fast/slow:** Multi-table join across cities, venues, screens, shows, and bookings performs multiple sequential scans and hash joins.
+Many queries use sequential scans, especially queries involving `bookings`, `shows` and `booking_seats`.
 
-### R19: Distributor report: tickets sold for every June 2026 show of movie 2
-- **Scan Nodes:** `Seq Scan on shows | Index Scan using uq_booking_show on bookings`
-- **Why it is fast/slow:** Full scan on shows and nested loop on booking_seats for movie 2 distributor reporting.
+Some queries use indexes created by primary keys, unique constraints and the show-overlap exclusion constraint.
 
-### R20: Finance: daily collections and running total for June 2026
-- **Scan Nodes:** `Seq Scan on bookings`
-- **Why it is fast/slow:** Daily running totals over June 2026 require full scan of bookings and window function computation over date buckets.
+A sequential scan is not always inefficient. PostgreSQL may choose it when a large portion of a table needs to be read or when scanning the whole table is cheaper than using an index.
 
-### R21: Loyalty: 20 customers with the most confirmed bookings in 2026
-- **Scan Nodes:** `Seq Scan on bookings`
-- **Why it is fast/slow:** Top 20 loyal customer query requires aggregating the entire bookings table by customer_id.
+Therefore, the scan type should be considered along with execution time and the complete execution plan.
 
-### R22: Support console: all bookings, newest first, page 4,001 (25 per page)
-- **Scan Nodes:** `Seq Scan on bookings`
-- **Why it is fast/slow:** Deep pagination (OFFSET 100000 LIMIT 25) requires scanning and sorting 100k+ rows before returning 25 rows.
+## 7. Baseline Conclusion
 
-### R23: Sign-in with mobile number
-- **Scan Nodes:** `Index Scan using customers_phone_key on customers`
-- **Why it is fast/slow:** Customer login by phone number performs Sequential Scan on customers; lacks B-Tree index on customers(phone).
+The baseline benchmark provides a starting point for measuring the performance of the BookMyShow database.
 
-### R24: Pricing: average price paid per seat class in each city (2026)
-- **Scan Nodes:** `Seq Scan on booking_seats | Seq Scan on seats | Seq Scan on screens | Seq Scan on venues`
-- **Why it is fast/slow:** Multi-table aggregation for average seat class price per city scans booking_seats, seats, screens, and venues.
+The results show that some queries execute very quickly, while queries such as R10 and R19 take considerably longer.
 
-### R25: Programming: average occupancy of late-night shows (starting 22:30 or later) in June 2026
-- **Scan Nodes:** `Seq Scan on booking_seats | Seq Scan on shows | Seq Scan on screens`
-- **Why it is fast/slow:** Late-night occupancy filtering starts_at::time >= '22:30' requires sequential scanning and filtering of shows.
+The execution plans also show that many queries use sequential scans on larger tables, including `shows`, `bookings` and `booking_seats`.
 
-### W01: Checkout: create a PENDING booking for 2 tickets of show 144446
-- **Scan Nodes:** `(no scan)`
-- **Why it is fast/slow:** Single row INSERT into bookings; fast B-Tree key insertion.
+These results will be used in CP3 to investigate slow queries, test query rewrites and evaluate suitable indexes. The optimized queries will be compared against these baseline timings to measure the changes in performance.
 
-### W02: Seat lock: the oldest PENDING booking adds 2 more seats (the unsold seats with the lowest ids in its show)
-- **Scan Nodes:** `Index Scan using bookings_pkey on bookings | Index Scan using seats_pkey on seats | Index Only Scan using uq_booking_show on bookings | Index Scan using shows_pkey on shows | Index Only Scan using pk_booking_seats on booking_seats`
-- **Why it is fast/slow:** Seat lock insert requires finding oldest pending booking and scanning available seats with NOT EXISTS subquery.
+## 8. Benchmark Output Files
 
-### W03: Payment callback: confirm the oldest PENDING booking
-- **Scan Nodes:** `Index Scan using bookings_pkey on bookings | Index Scan using uq_booking_show on bookings`
-- **Why it is fast/slow:** UPDATE status to 'CONFIRMED' for oldest pending booking uses subquery on bookings with sequential scan.
+The benchmark script saved its output in:
 
-### W04: Seat-lock expiry: release seats held by PENDING bookings older than 10 minutes
-- **Scan Nodes:** `Seq Scan on booking_seats | Seq Scan on bookings`
-- **Why it is fast/slow:** DELETE from booking_seats with join on bookings for expired pending locks does a full table scan on bookings.
+```text
+benchmarks/results/baseline/
+```
 
-### W05: Pricing: 10% higher prices for all July weekend shows of movie 2
-- **Scan Nodes:** `Seq Scan on shows`
-- **Why it is fast/slow:** Dynamic pricing UPDATE on shows for weekend July shows filters with EXTRACT on unindexed timestamp.
+The folder contains:
 
+- `summary.csv` – average, median, minimum and maximum execution times, with scan-node information for all 30 queries.
+- `R01.txt` to `R25.txt` – raw execution plans for read queries.
+- `W01.txt` to `W05.txt` – raw execution plans for write queries.
+
+These files are retained as the baseline benchmark results for comparison during CP3.
