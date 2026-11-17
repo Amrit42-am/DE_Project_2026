@@ -1,0 +1,78 @@
+=== R19 run 1 ===
+Sort  (cost=360925.81..360926.13 rows=128 width=24) (actual time=255.354..255.379 rows=207.00 loops=1)
+  Sort Key: ((SubPlan 1)) DESC, s.starts_at
+  Sort Method: quicksort  Memory: 34kB
+  Buffers: shared hit=86928
+  ->  Gather  (cost=1000.00..360921.33 rows=128 width=24) (actual time=6.216..255.300 rows=207.00 loops=1)
+        Workers Planned: 1
+        Workers Launched: 1
+        Buffers: shared hit=86922
+        ->  Parallel Seq Scan on shows s  (cost=0.00..3055.41 rows=75 width=16) (actual time=1.865..2.460 rows=103.50 loops=2)
+              Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone) AND (movie_id = 2))
+              Rows Removed by Filter: 79914
+              Buffers: shared hit=1408
+        SubPlan 1
+          ->  Aggregate  (cost=2787.91..2787.92 rows=1 width=8) (actual time=1.215..1.215 rows=1.00 loops=207)
+                Buffers: shared hit=85514
+                ->  Index Scan using uq_booking_show on bookings b  (cost=0.42..2787.90 rows=2 width=2) (actual time=0.791..1.214 rows=0.95 loops=207)
+                      Index Cond: (show_id = s.show_id)
+                      Filter: ((status)::text = 'CONFIRMED'::text)
+                      Rows Removed by Filter: 0
+                      Index Searches: 207
+                      Buffers: shared hit=85514
+Planning:
+  Buffers: shared hit=209
+Planning Time: 0.454 ms
+Execution Time: 255.421 ms
+=== R19 run 2 ===
+Sort  (cost=360925.81..360926.13 rows=128 width=24) (actual time=248.511..248.545 rows=207.00 loops=1)
+  Sort Key: ((SubPlan 1)) DESC, s.starts_at
+  Sort Method: quicksort  Memory: 34kB
+  Buffers: shared hit=86928
+  ->  Gather  (cost=1000.00..360921.33 rows=128 width=24) (actual time=5.164..248.465 rows=207.00 loops=1)
+        Workers Planned: 1
+        Workers Launched: 1
+        Buffers: shared hit=86922
+        ->  Parallel Seq Scan on shows s  (cost=0.00..3055.41 rows=75 width=16) (actual time=2.019..2.509 rows=103.50 loops=2)
+              Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone) AND (movie_id = 2))
+              Rows Removed by Filter: 79914
+              Buffers: shared hit=1408
+        SubPlan 1
+          ->  Aggregate  (cost=2787.91..2787.92 rows=1 width=8) (actual time=1.183..1.183 rows=1.00 loops=207)
+                Buffers: shared hit=85514
+                ->  Index Scan using uq_booking_show on bookings b  (cost=0.42..2787.90 rows=2 width=2) (actual time=0.764..1.182 rows=0.95 loops=207)
+                      Index Cond: (show_id = s.show_id)
+                      Filter: ((status)::text = 'CONFIRMED'::text)
+                      Rows Removed by Filter: 0
+                      Index Searches: 207
+                      Buffers: shared hit=85514
+Planning:
+  Buffers: shared hit=209
+Planning Time: 1.138 ms
+Execution Time: 248.586 ms
+=== R19 run 3 ===
+Sort  (cost=360925.81..360926.13 rows=128 width=24) (actual time=267.270..267.314 rows=207.00 loops=1)
+  Sort Key: ((SubPlan 1)) DESC, s.starts_at
+  Sort Method: quicksort  Memory: 34kB
+  Buffers: shared hit=86928
+  ->  Gather  (cost=1000.00..360921.33 rows=128 width=24) (actual time=4.728..267.224 rows=207.00 loops=1)
+        Workers Planned: 1
+        Workers Launched: 1
+        Buffers: shared hit=86922
+        ->  Parallel Seq Scan on shows s  (cost=0.00..3055.41 rows=75 width=16) (actual time=1.902..2.383 rows=103.50 loops=2)
+              Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone) AND (movie_id = 2))
+              Rows Removed by Filter: 79914
+              Buffers: shared hit=1408
+        SubPlan 1
+          ->  Aggregate  (cost=2787.91..2787.92 rows=1 width=8) (actual time=1.275..1.275 rows=1.00 loops=207)
+                Buffers: shared hit=85514
+                ->  Index Scan using uq_booking_show on bookings b  (cost=0.42..2787.90 rows=2 width=2) (actual time=0.829..1.274 rows=0.95 loops=207)
+                      Index Cond: (show_id = s.show_id)
+                      Filter: ((status)::text = 'CONFIRMED'::text)
+                      Rows Removed by Filter: 0
+                      Index Searches: 207
+                      Buffers: shared hit=85514
+Planning:
+  Buffers: shared hit=209
+Planning Time: 0.463 ms
+Execution Time: 267.361 ms

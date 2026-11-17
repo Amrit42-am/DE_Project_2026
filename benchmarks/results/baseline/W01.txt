@@ -1,0 +1,27 @@
+=== W01 run 1 ===
+Insert on bookings  (cost=0.00..0.01 rows=0 width=0) (actual time=0.310..0.310 rows=0.00 loops=1)
+  Buffers: shared hit=104 dirtied=5
+  ->  Result  (cost=0.00..0.01 rows=1 width=296) (actual time=0.002..0.002 rows=1.00 loops=1)
+Planning Time: 0.041 ms
+Trigger for constraint fk_bookings_customer: time=0.331 calls=1
+Trigger for constraint fk_bookings_show: time=0.171 calls=1
+Trigger for constraint fk_bookings_offer: time=0.012 calls=1
+Execution Time: 0.836 ms
+=== W01 run 2 ===
+Insert on bookings  (cost=0.00..0.01 rows=0 width=0) (actual time=0.229..0.229 rows=0.00 loops=1)
+  Buffers: shared hit=106 dirtied=1
+  ->  Result  (cost=0.00..0.01 rows=1 width=296) (actual time=0.002..0.002 rows=1.00 loops=1)
+Planning Time: 0.040 ms
+Trigger for constraint fk_bookings_customer: time=0.329 calls=1
+Trigger for constraint fk_bookings_show: time=0.185 calls=1
+Trigger for constraint fk_bookings_offer: time=0.013 calls=1
+Execution Time: 0.769 ms
+=== W01 run 3 ===
+Insert on bookings  (cost=0.00..0.01 rows=0 width=0) (actual time=0.272..0.272 rows=0.00 loops=1)
+  Buffers: shared hit=106 dirtied=1
+  ->  Result  (cost=0.00..0.01 rows=1 width=296) (actual time=0.001..0.002 rows=1.00 loops=1)
+Planning Time: 0.045 ms
+Trigger for constraint fk_bookings_customer: time=0.331 calls=1
+Trigger for constraint fk_bookings_show: time=0.184 calls=1
+Trigger for constraint fk_bookings_offer: time=0.013 calls=1
+Execution Time: 0.813 ms
