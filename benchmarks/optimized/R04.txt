@@ -1,0 +1,45 @@
+=== R04 run 1 ===
+Index Scan using bookings_booking_code_key on bookings  (cost=0.42..8.44 rows=1 width=38) (actual time=1.738..1.739 rows=1.00 loops=1)
+  Index Cond: ((booking_code)::text = 'BMSA45E9F9'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=258 read=7
+Planning Time: 1.958 ms
+Execution Time: 1.775 ms
+=== R04 run 2 ===
+Index Scan using bookings_booking_code_key on bookings  (cost=0.42..8.44 rows=1 width=38) (actual time=0.018..0.018 rows=1.00 loops=1)
+  Index Cond: ((booking_code)::text = 'BMSA45E9F9'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=265
+Planning Time: 0.469 ms
+Execution Time: 0.036 ms
+=== R04 run 3 ===
+Index Scan using bookings_booking_code_key on bookings  (cost=0.42..8.44 rows=1 width=38) (actual time=0.017..0.017 rows=1.00 loops=1)
+  Index Cond: ((booking_code)::text = 'BMSA45E9F9'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=265
+Planning Time: 0.478 ms
+Execution Time: 0.035 ms
+=== R04 run 4 ===
+Index Scan using bookings_booking_code_key on bookings  (cost=0.42..8.44 rows=1 width=38) (actual time=0.018..0.018 rows=1.00 loops=1)
+  Index Cond: ((booking_code)::text = 'BMSA45E9F9'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=265
+Planning Time: 0.881 ms
+Execution Time: 0.037 ms
+=== R04 run 5 ===
+Index Scan using bookings_booking_code_key on bookings  (cost=0.42..8.44 rows=1 width=38) (actual time=0.017..0.017 rows=1.00 loops=1)
+  Index Cond: ((booking_code)::text = 'BMSA45E9F9'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=265
+Planning Time: 0.583 ms
+Execution Time: 0.035 ms

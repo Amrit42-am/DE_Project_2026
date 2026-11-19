@@ -1,0 +1,140 @@
+=== R14 run 1 ===
+Limit  (cost=929.38..929.43 rows=20 width=61) (actual time=5.450..5.451 rows=20.00 loops=1)
+  Buffers: shared hit=262
+  ->  Sort  (cost=929.38..929.63 rows=100 width=61) (actual time=5.449..5.450 rows=20.00 loops=1)
+        Sort Key: (round(avg(r.rating), 1)) DESC
+        Sort Method: top-N heapsort  Memory: 27kB
+        Buffers: shared hit=262
+        ->  HashAggregate  (cost=921.97..926.72 rows=100 width=61) (actual time=5.361..5.408 rows=264.00 loops=1)
+              Group Key: m.movie_id
+              Filter: (count(*) >= 20)
+              Batches: 1  Memory Usage: 96kB
+              Rows Removed by Filter: 22
+              Buffers: shared hit=259
+              ->  Hash Join  (cost=10.50..678.14 rows=32510 width=23) (actual time=0.044..3.452 rows=32510.00 loops=1)
+                    Hash Cond: (r.movie_id = m.movie_id)
+                    Buffers: shared hit=259
+                    ->  Seq Scan on movie_reviews r  (cost=0.00..581.10 rows=32510 width=6) (actual time=0.005..1.105 rows=32510.00 loops=1)
+                          Buffers: shared hit=256
+                    ->  Hash  (cost=6.75..6.75 rows=300 width=21) (actual time=0.035..0.035 rows=300.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 24kB
+                          Buffers: shared hit=3
+                          ->  Seq Scan on movies m  (cost=0.00..6.75 rows=300 width=21) (actual time=0.003..0.017 rows=300.00 loops=1)
+                                Filter: (release_date >= '2026-01-01'::date)
+                                Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=223 read=4
+Planning Time: 2.622 ms
+Execution Time: 5.491 ms
+=== R14 run 2 ===
+Limit  (cost=929.38..929.43 rows=20 width=61) (actual time=5.626..5.628 rows=20.00 loops=1)
+  Buffers: shared hit=262
+  ->  Sort  (cost=929.38..929.63 rows=100 width=61) (actual time=5.625..5.626 rows=20.00 loops=1)
+        Sort Key: (round(avg(r.rating), 1)) DESC
+        Sort Method: top-N heapsort  Memory: 27kB
+        Buffers: shared hit=262
+        ->  HashAggregate  (cost=921.97..926.72 rows=100 width=61) (actual time=5.537..5.585 rows=264.00 loops=1)
+              Group Key: m.movie_id
+              Filter: (count(*) >= 20)
+              Batches: 1  Memory Usage: 96kB
+              Rows Removed by Filter: 22
+              Buffers: shared hit=259
+              ->  Hash Join  (cost=10.50..678.14 rows=32510 width=23) (actual time=0.039..3.460 rows=32510.00 loops=1)
+                    Hash Cond: (r.movie_id = m.movie_id)
+                    Buffers: shared hit=259
+                    ->  Seq Scan on movie_reviews r  (cost=0.00..581.10 rows=32510 width=6) (actual time=0.003..0.903 rows=32510.00 loops=1)
+                          Buffers: shared hit=256
+                    ->  Hash  (cost=6.75..6.75 rows=300 width=21) (actual time=0.032..0.032 rows=300.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 24kB
+                          Buffers: shared hit=3
+                          ->  Seq Scan on movies m  (cost=0.00..6.75 rows=300 width=21) (actual time=0.003..0.016 rows=300.00 loops=1)
+                                Filter: (release_date >= '2026-01-01'::date)
+                                Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=227
+Planning Time: 0.405 ms
+Execution Time: 5.664 ms
+=== R14 run 3 ===
+Limit  (cost=929.38..929.43 rows=20 width=61) (actual time=5.590..5.592 rows=20.00 loops=1)
+  Buffers: shared hit=262
+  ->  Sort  (cost=929.38..929.63 rows=100 width=61) (actual time=5.590..5.591 rows=20.00 loops=1)
+        Sort Key: (round(avg(r.rating), 1)) DESC
+        Sort Method: top-N heapsort  Memory: 27kB
+        Buffers: shared hit=262
+        ->  HashAggregate  (cost=921.97..926.72 rows=100 width=61) (actual time=5.503..5.550 rows=264.00 loops=1)
+              Group Key: m.movie_id
+              Filter: (count(*) >= 20)
+              Batches: 1  Memory Usage: 96kB
+              Rows Removed by Filter: 22
+              Buffers: shared hit=259
+              ->  Hash Join  (cost=10.50..678.14 rows=32510 width=23) (actual time=0.036..3.436 rows=32510.00 loops=1)
+                    Hash Cond: (r.movie_id = m.movie_id)
+                    Buffers: shared hit=259
+                    ->  Seq Scan on movie_reviews r  (cost=0.00..581.10 rows=32510 width=6) (actual time=0.002..0.891 rows=32510.00 loops=1)
+                          Buffers: shared hit=256
+                    ->  Hash  (cost=6.75..6.75 rows=300 width=21) (actual time=0.030..0.031 rows=300.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 24kB
+                          Buffers: shared hit=3
+                          ->  Seq Scan on movies m  (cost=0.00..6.75 rows=300 width=21) (actual time=0.002..0.014 rows=300.00 loops=1)
+                                Filter: (release_date >= '2026-01-01'::date)
+                                Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=227
+Planning Time: 0.388 ms
+Execution Time: 5.633 ms
+=== R14 run 4 ===
+Limit  (cost=929.38..929.43 rows=20 width=61) (actual time=5.458..5.460 rows=20.00 loops=1)
+  Buffers: shared hit=262
+  ->  Sort  (cost=929.38..929.63 rows=100 width=61) (actual time=5.457..5.458 rows=20.00 loops=1)
+        Sort Key: (round(avg(r.rating), 1)) DESC
+        Sort Method: top-N heapsort  Memory: 27kB
+        Buffers: shared hit=262
+        ->  HashAggregate  (cost=921.97..926.72 rows=100 width=61) (actual time=5.373..5.418 rows=264.00 loops=1)
+              Group Key: m.movie_id
+              Filter: (count(*) >= 20)
+              Batches: 1  Memory Usage: 96kB
+              Rows Removed by Filter: 22
+              Buffers: shared hit=259
+              ->  Hash Join  (cost=10.50..678.14 rows=32510 width=23) (actual time=0.039..3.346 rows=32510.00 loops=1)
+                    Hash Cond: (r.movie_id = m.movie_id)
+                    Buffers: shared hit=259
+                    ->  Seq Scan on movie_reviews r  (cost=0.00..581.10 rows=32510 width=6) (actual time=0.003..0.891 rows=32510.00 loops=1)
+                          Buffers: shared hit=256
+                    ->  Hash  (cost=6.75..6.75 rows=300 width=21) (actual time=0.032..0.033 rows=300.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 24kB
+                          Buffers: shared hit=3
+                          ->  Seq Scan on movies m  (cost=0.00..6.75 rows=300 width=21) (actual time=0.003..0.016 rows=300.00 loops=1)
+                                Filter: (release_date >= '2026-01-01'::date)
+                                Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=227
+Planning Time: 0.433 ms
+Execution Time: 5.504 ms
+=== R14 run 5 ===
+Limit  (cost=929.38..929.43 rows=20 width=61) (actual time=5.643..5.645 rows=20.00 loops=1)
+  Buffers: shared hit=262
+  ->  Sort  (cost=929.38..929.63 rows=100 width=61) (actual time=5.642..5.643 rows=20.00 loops=1)
+        Sort Key: (round(avg(r.rating), 1)) DESC
+        Sort Method: top-N heapsort  Memory: 27kB
+        Buffers: shared hit=262
+        ->  HashAggregate  (cost=921.97..926.72 rows=100 width=61) (actual time=5.547..5.595 rows=264.00 loops=1)
+              Group Key: m.movie_id
+              Filter: (count(*) >= 20)
+              Batches: 1  Memory Usage: 96kB
+              Rows Removed by Filter: 22
+              Buffers: shared hit=259
+              ->  Hash Join  (cost=10.50..678.14 rows=32510 width=23) (actual time=0.039..3.442 rows=32510.00 loops=1)
+                    Hash Cond: (r.movie_id = m.movie_id)
+                    Buffers: shared hit=259
+                    ->  Seq Scan on movie_reviews r  (cost=0.00..581.10 rows=32510 width=6) (actual time=0.003..0.881 rows=32510.00 loops=1)
+                          Buffers: shared hit=256
+                    ->  Hash  (cost=6.75..6.75 rows=300 width=21) (actual time=0.032..0.032 rows=300.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 24kB
+                          Buffers: shared hit=3
+                          ->  Seq Scan on movies m  (cost=0.00..6.75 rows=300 width=21) (actual time=0.003..0.015 rows=300.00 loops=1)
+                                Filter: (release_date >= '2026-01-01'::date)
+                                Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=227
+Planning Time: 0.432 ms
+Execution Time: 5.686 ms

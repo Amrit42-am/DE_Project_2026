@@ -1,0 +1,125 @@
+=== R10 run 1 ===
+Sort  (cost=382989.82..387469.76 rows=1791977 width=44) (actual time=136.186..136.190 rows=209.00 loops=1)
+  Sort Key: ((s2.starts_at - s1.ends_at)), s1.screen_id
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=150587 read=1033
+  ->  Nested Loop  (cost=0.85..86615.05 rows=1791977 width=44) (actual time=38.739..136.104 rows=209.00 loops=1)
+        Buffers: shared hit=150579 read=1033
+        ->  Index Scan using idx_shows_starts_at on shows s1  (cost=0.42..2355.06 rows=48283 width=24) (actual time=0.606..22.820 rows=48990.00 loops=1)
+              Index Cond: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=4422 read=219
+        ->  Memoize  (cost=0.43..1.34 rows=36 width=16) (actual time=0.002..0.002 rows=0.00 loops=48990)
+              Cache Key: s1.starts_at, (s1.ends_at + '00:30:00'::interval), s1.screen_id
+              Cache Mode: binary
+              Hits: 0  Misses: 48990  Evictions: 0  Overflows: 0  Memory Usage: 4030kB
+              Buffers: shared hit=146157 read=814
+              ->  Index Only Scan using idx_shows_screen_starts_at on shows s2  (cost=0.42..1.33 rows=36 width=16) (actual time=0.002..0.002 rows=0.00 loops=48990)
+                    Index Cond: ((screen_id = s1.screen_id) AND (starts_at > s1.starts_at) AND (starts_at < (s1.ends_at + '00:30:00'::interval)))
+                    Heap Fetches: 0
+                    Index Searches: 48990
+                    Buffers: shared hit=146157 read=814
+Planning:
+  Buffers: shared hit=342
+Planning Time: 0.488 ms
+Execution Time: 136.547 ms
+=== R10 run 2 ===
+Sort  (cost=382989.82..387469.76 rows=1791977 width=44) (actual time=39.896..39.901 rows=209.00 loops=1)
+  Sort Key: ((s2.starts_at - s1.ends_at)), s1.screen_id
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=151620
+  ->  Nested Loop  (cost=0.85..86615.05 rows=1791977 width=44) (actual time=1.411..39.849 rows=209.00 loops=1)
+        Buffers: shared hit=151612
+        ->  Index Scan using idx_shows_starts_at on shows s1  (cost=0.42..2355.06 rows=48283 width=24) (actual time=0.006..3.721 rows=48990.00 loops=1)
+              Index Cond: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=4641
+        ->  Memoize  (cost=0.43..1.34 rows=36 width=16) (actual time=0.001..0.001 rows=0.00 loops=48990)
+              Cache Key: s1.starts_at, (s1.ends_at + '00:30:00'::interval), s1.screen_id
+              Cache Mode: binary
+              Hits: 0  Misses: 48990  Evictions: 0  Overflows: 0  Memory Usage: 4030kB
+              Buffers: shared hit=146971
+              ->  Index Only Scan using idx_shows_screen_starts_at on shows s2  (cost=0.42..1.33 rows=36 width=16) (actual time=0.000..0.000 rows=0.00 loops=48990)
+                    Index Cond: ((screen_id = s1.screen_id) AND (starts_at > s1.starts_at) AND (starts_at < (s1.ends_at + '00:30:00'::interval)))
+                    Heap Fetches: 0
+                    Index Searches: 48990
+                    Buffers: shared hit=146971
+Planning:
+  Buffers: shared hit=342
+Planning Time: 0.476 ms
+Execution Time: 39.954 ms
+=== R10 run 3 ===
+Sort  (cost=382989.82..387469.76 rows=1791977 width=44) (actual time=47.281..47.285 rows=209.00 loops=1)
+  Sort Key: ((s2.starts_at - s1.ends_at)), s1.screen_id
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=151620
+  ->  Nested Loop  (cost=0.85..86615.05 rows=1791977 width=44) (actual time=2.328..47.225 rows=209.00 loops=1)
+        Buffers: shared hit=151612
+        ->  Index Scan using idx_shows_starts_at on shows s1  (cost=0.42..2355.06 rows=48283 width=24) (actual time=0.007..4.683 rows=48990.00 loops=1)
+              Index Cond: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=4641
+        ->  Memoize  (cost=0.43..1.34 rows=36 width=16) (actual time=0.001..0.001 rows=0.00 loops=48990)
+              Cache Key: s1.starts_at, (s1.ends_at + '00:30:00'::interval), s1.screen_id
+              Cache Mode: binary
+              Hits: 0  Misses: 48990  Evictions: 0  Overflows: 0  Memory Usage: 4030kB
+              Buffers: shared hit=146971
+              ->  Index Only Scan using idx_shows_screen_starts_at on shows s2  (cost=0.42..1.33 rows=36 width=16) (actual time=0.001..0.001 rows=0.00 loops=48990)
+                    Index Cond: ((screen_id = s1.screen_id) AND (starts_at > s1.starts_at) AND (starts_at < (s1.ends_at + '00:30:00'::interval)))
+                    Heap Fetches: 0
+                    Index Searches: 48990
+                    Buffers: shared hit=146971
+Planning:
+  Buffers: shared hit=342
+Planning Time: 0.545 ms
+Execution Time: 47.334 ms
+=== R10 run 4 ===
+Sort  (cost=382989.82..387469.76 rows=1791977 width=44) (actual time=41.509..41.513 rows=209.00 loops=1)
+  Sort Key: ((s2.starts_at - s1.ends_at)), s1.screen_id
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=151620
+  ->  Nested Loop  (cost=0.85..86615.05 rows=1791977 width=44) (actual time=1.654..41.457 rows=209.00 loops=1)
+        Buffers: shared hit=151612
+        ->  Index Scan using idx_shows_starts_at on shows s1  (cost=0.42..2355.06 rows=48283 width=24) (actual time=0.008..3.983 rows=48990.00 loops=1)
+              Index Cond: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=4641
+        ->  Memoize  (cost=0.43..1.34 rows=36 width=16) (actual time=0.001..0.001 rows=0.00 loops=48990)
+              Cache Key: s1.starts_at, (s1.ends_at + '00:30:00'::interval), s1.screen_id
+              Cache Mode: binary
+              Hits: 0  Misses: 48990  Evictions: 0  Overflows: 0  Memory Usage: 4030kB
+              Buffers: shared hit=146971
+              ->  Index Only Scan using idx_shows_screen_starts_at on shows s2  (cost=0.42..1.33 rows=36 width=16) (actual time=0.001..0.001 rows=0.00 loops=48990)
+                    Index Cond: ((screen_id = s1.screen_id) AND (starts_at > s1.starts_at) AND (starts_at < (s1.ends_at + '00:30:00'::interval)))
+                    Heap Fetches: 0
+                    Index Searches: 48990
+                    Buffers: shared hit=146971
+Planning:
+  Buffers: shared hit=342
+Planning Time: 0.494 ms
+Execution Time: 41.572 ms
+=== R10 run 5 ===
+Sort  (cost=382989.82..387469.76 rows=1791977 width=44) (actual time=42.405..42.409 rows=209.00 loops=1)
+  Sort Key: ((s2.starts_at - s1.ends_at)), s1.screen_id
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=151620
+  ->  Nested Loop  (cost=0.85..86615.05 rows=1791977 width=44) (actual time=2.217..42.352 rows=209.00 loops=1)
+        Buffers: shared hit=151612
+        ->  Index Scan using idx_shows_starts_at on shows s1  (cost=0.42..2355.06 rows=48283 width=24) (actual time=0.010..4.005 rows=48990.00 loops=1)
+              Index Cond: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=4641
+        ->  Memoize  (cost=0.43..1.34 rows=36 width=16) (actual time=0.001..0.001 rows=0.00 loops=48990)
+              Cache Key: s1.starts_at, (s1.ends_at + '00:30:00'::interval), s1.screen_id
+              Cache Mode: binary
+              Hits: 0  Misses: 48990  Evictions: 0  Overflows: 0  Memory Usage: 4030kB
+              Buffers: shared hit=146971
+              ->  Index Only Scan using idx_shows_screen_starts_at on shows s2  (cost=0.42..1.33 rows=36 width=16) (actual time=0.001..0.001 rows=0.00 loops=48990)
+                    Index Cond: ((screen_id = s1.screen_id) AND (starts_at > s1.starts_at) AND (starts_at < (s1.ends_at + '00:30:00'::interval)))
+                    Heap Fetches: 0
+                    Index Searches: 48990
+                    Buffers: shared hit=146971
+Planning:
+  Buffers: shared hit=342
+Planning Time: 0.745 ms
+Execution Time: 42.472 ms
