@@ -1,0 +1,205 @@
+=== R08 run 1 ===
+Limit  (cost=4995.64..4995.67 rows=10 width=57) (actual time=22.399..22.401 rows=10.00 loops=1)
+  Buffers: shared hit=2199 read=25
+  ->  Sort  (cost=4995.64..4996.39 rows=300 width=57) (actual time=22.399..22.400 rows=10.00 loops=1)
+        Sort Key: (sum(b.ticket_amount)) DESC
+        Sort Method: top-N heapsort  Memory: 26kB
+        Buffers: shared hit=2199 read=25
+        ->  GroupAggregate  (cost=4944.35..4989.16 rows=300 width=57) (actual time=21.926..22.375 rows=98.00 loops=1)
+              Group Key: m.title
+              Buffers: shared hit=2196 read=25
+              ->  Sort  (cost=4944.35..4954.62 rows=4106 width=26) (actual time=21.909..22.009 rows=5129.00 loops=1)
+                    Sort Key: m.title, b.booking_id
+                    Sort Method: quicksort  Memory: 442kB
+                    Buffers: shared hit=2196 read=25
+                    ->  Hash Join  (cost=276.06..4697.92 rows=4106 width=26) (actual time=1.292..19.501 rows=5129.00 loops=1)
+                          Hash Cond: (s.movie_id = m.movie_id)
+                          Buffers: shared hit=2190 read=25
+                          ->  Hash Join  (cost=266.31..4677.23 rows=4106 width=13) (actual time=1.248..19.014 rows=5129.00 loops=1)
+                                Hash Cond: (b.show_id = s.show_id)
+                                Buffers: shared hit=2187 read=25
+                                ->  Seq Scan on bookings b  (cost=0.00..4060.18 rows=133614 width=13) (actual time=0.008..12.460 rows=133568.00 loops=1)
+                                      Filter: ((status)::text = 'CONFIRMED'::text)
+                                      Rows Removed by Filter: 16526
+                                      Buffers: shared hit=2184
+                                ->  Hash  (cost=204.84..204.84 rows=4918 width=8) (actual time=1.228..1.228 rows=4899.00 loops=1)
+                                      Buckets: 8192  Batches: 1  Memory Usage: 256kB
+                                      Buffers: shared hit=3 read=25
+                                      ->  Index Only Scan using idx_shows_starts_at on shows s  (cost=0.42..204.84 rows=4918 width=8) (actual time=0.146..0.886 rows=4899.00 loops=1)
+                                            Index Cond: ((starts_at >= '2026-06-26 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-06-29 00:00:00+05:30'::timestamp with time zone))
+                                            Heap Fetches: 0
+                                            Index Searches: 1
+                                            Buffers: shared hit=3 read=25
+                          ->  Hash  (cost=6.00..6.00 rows=300 width=21) (actual time=0.040..0.041 rows=300.00 loops=1)
+                                Buckets: 1024  Batches: 1  Memory Usage: 25kB
+                                Buffers: shared hit=3
+                                ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=21) (actual time=0.004..0.021 rows=300.00 loops=1)
+                                      Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=572
+Planning Time: 1.503 ms
+Execution Time: 22.451 ms
+=== R08 run 2 ===
+Limit  (cost=4995.64..4995.67 rows=10 width=57) (actual time=19.164..19.165 rows=10.00 loops=1)
+  Buffers: shared hit=2224
+  ->  Sort  (cost=4995.64..4996.39 rows=300 width=57) (actual time=19.163..19.164 rows=10.00 loops=1)
+        Sort Key: (sum(b.ticket_amount)) DESC
+        Sort Method: top-N heapsort  Memory: 26kB
+        Buffers: shared hit=2224
+        ->  GroupAggregate  (cost=4944.35..4989.16 rows=300 width=57) (actual time=18.753..19.144 rows=98.00 loops=1)
+              Group Key: m.title
+              Buffers: shared hit=2221
+              ->  Sort  (cost=4944.35..4954.62 rows=4106 width=26) (actual time=18.739..18.836 rows=5129.00 loops=1)
+                    Sort Key: m.title, b.booking_id
+                    Sort Method: quicksort  Memory: 442kB
+                    Buffers: shared hit=2221
+                    ->  Hash Join  (cost=276.06..4697.92 rows=4106 width=26) (actual time=0.507..16.338 rows=5129.00 loops=1)
+                          Hash Cond: (s.movie_id = m.movie_id)
+                          Buffers: shared hit=2215
+                          ->  Hash Join  (cost=266.31..4677.23 rows=4106 width=13) (actual time=0.461..15.844 rows=5129.00 loops=1)
+                                Hash Cond: (b.show_id = s.show_id)
+                                Buffers: shared hit=2212
+                                ->  Seq Scan on bookings b  (cost=0.00..4060.18 rows=133614 width=13) (actual time=0.004..10.263 rows=133568.00 loops=1)
+                                      Filter: ((status)::text = 'CONFIRMED'::text)
+                                      Rows Removed by Filter: 16526
+                                      Buffers: shared hit=2184
+                                ->  Hash  (cost=204.84..204.84 rows=4918 width=8) (actual time=0.445..0.446 rows=4899.00 loops=1)
+                                      Buckets: 8192  Batches: 1  Memory Usage: 256kB
+                                      Buffers: shared hit=28
+                                      ->  Index Only Scan using idx_shows_starts_at on shows s  (cost=0.42..204.84 rows=4918 width=8) (actual time=0.007..0.233 rows=4899.00 loops=1)
+                                            Index Cond: ((starts_at >= '2026-06-26 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-06-29 00:00:00+05:30'::timestamp with time zone))
+                                            Heap Fetches: 0
+                                            Index Searches: 1
+                                            Buffers: shared hit=28
+                          ->  Hash  (cost=6.00..6.00 rows=300 width=21) (actual time=0.035..0.035 rows=300.00 loops=1)
+                                Buckets: 1024  Batches: 1  Memory Usage: 25kB
+                                Buffers: shared hit=3
+                                ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=21) (actual time=0.003..0.015 rows=300.00 loops=1)
+                                      Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=572
+Planning Time: 1.003 ms
+Execution Time: 19.204 ms
+=== R08 run 3 ===
+Limit  (cost=4995.64..4995.67 rows=10 width=57) (actual time=20.014..20.016 rows=10.00 loops=1)
+  Buffers: shared hit=2224
+  ->  Sort  (cost=4995.64..4996.39 rows=300 width=57) (actual time=20.013..20.015 rows=10.00 loops=1)
+        Sort Key: (sum(b.ticket_amount)) DESC
+        Sort Method: top-N heapsort  Memory: 26kB
+        Buffers: shared hit=2224
+        ->  GroupAggregate  (cost=4944.35..4989.16 rows=300 width=57) (actual time=19.586..19.991 rows=98.00 loops=1)
+              Group Key: m.title
+              Buffers: shared hit=2221
+              ->  Sort  (cost=4944.35..4954.62 rows=4106 width=26) (actual time=19.569..19.673 rows=5129.00 loops=1)
+                    Sort Key: m.title, b.booking_id
+                    Sort Method: quicksort  Memory: 442kB
+                    Buffers: shared hit=2221
+                    ->  Hash Join  (cost=276.06..4697.92 rows=4106 width=26) (actual time=0.545..17.038 rows=5129.00 loops=1)
+                          Hash Cond: (s.movie_id = m.movie_id)
+                          Buffers: shared hit=2215
+                          ->  Hash Join  (cost=266.31..4677.23 rows=4106 width=13) (actual time=0.508..16.549 rows=5129.00 loops=1)
+                                Hash Cond: (b.show_id = s.show_id)
+                                Buffers: shared hit=2212
+                                ->  Seq Scan on bookings b  (cost=0.00..4060.18 rows=133614 width=13) (actual time=0.005..10.522 rows=133568.00 loops=1)
+                                      Filter: ((status)::text = 'CONFIRMED'::text)
+                                      Rows Removed by Filter: 16526
+                                      Buffers: shared hit=2184
+                                ->  Hash  (cost=204.84..204.84 rows=4918 width=8) (actual time=0.490..0.491 rows=4899.00 loops=1)
+                                      Buckets: 8192  Batches: 1  Memory Usage: 256kB
+                                      Buffers: shared hit=28
+                                      ->  Index Only Scan using idx_shows_starts_at on shows s  (cost=0.42..204.84 rows=4918 width=8) (actual time=0.008..0.253 rows=4899.00 loops=1)
+                                            Index Cond: ((starts_at >= '2026-06-26 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-06-29 00:00:00+05:30'::timestamp with time zone))
+                                            Heap Fetches: 0
+                                            Index Searches: 1
+                                            Buffers: shared hit=28
+                          ->  Hash  (cost=6.00..6.00 rows=300 width=21) (actual time=0.034..0.034 rows=300.00 loops=1)
+                                Buckets: 1024  Batches: 1  Memory Usage: 25kB
+                                Buffers: shared hit=3
+                                ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=21) (actual time=0.003..0.015 rows=300.00 loops=1)
+                                      Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=572
+Planning Time: 1.166 ms
+Execution Time: 20.060 ms
+=== R08 run 4 ===
+Limit  (cost=4995.64..4995.67 rows=10 width=57) (actual time=18.990..18.992 rows=10.00 loops=1)
+  Buffers: shared hit=2224
+  ->  Sort  (cost=4995.64..4996.39 rows=300 width=57) (actual time=18.989..18.991 rows=10.00 loops=1)
+        Sort Key: (sum(b.ticket_amount)) DESC
+        Sort Method: top-N heapsort  Memory: 26kB
+        Buffers: shared hit=2224
+        ->  GroupAggregate  (cost=4944.35..4989.16 rows=300 width=57) (actual time=18.589..18.969 rows=98.00 loops=1)
+              Group Key: m.title
+              Buffers: shared hit=2221
+              ->  Sort  (cost=4944.35..4954.62 rows=4106 width=26) (actual time=18.571..18.667 rows=5129.00 loops=1)
+                    Sort Key: m.title, b.booking_id
+                    Sort Method: quicksort  Memory: 442kB
+                    Buffers: shared hit=2221
+                    ->  Hash Join  (cost=276.06..4697.92 rows=4106 width=26) (actual time=0.511..16.292 rows=5129.00 loops=1)
+                          Hash Cond: (s.movie_id = m.movie_id)
+                          Buffers: shared hit=2215
+                          ->  Hash Join  (cost=266.31..4677.23 rows=4106 width=13) (actual time=0.478..15.807 rows=5129.00 loops=1)
+                                Hash Cond: (b.show_id = s.show_id)
+                                Buffers: shared hit=2212
+                                ->  Seq Scan on bookings b  (cost=0.00..4060.18 rows=133614 width=13) (actual time=0.003..10.126 rows=133568.00 loops=1)
+                                      Filter: ((status)::text = 'CONFIRMED'::text)
+                                      Rows Removed by Filter: 16526
+                                      Buffers: shared hit=2184
+                                ->  Hash  (cost=204.84..204.84 rows=4918 width=8) (actual time=0.465..0.466 rows=4899.00 loops=1)
+                                      Buckets: 8192  Batches: 1  Memory Usage: 256kB
+                                      Buffers: shared hit=28
+                                      ->  Index Only Scan using idx_shows_starts_at on shows s  (cost=0.42..204.84 rows=4918 width=8) (actual time=0.006..0.250 rows=4899.00 loops=1)
+                                            Index Cond: ((starts_at >= '2026-06-26 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-06-29 00:00:00+05:30'::timestamp with time zone))
+                                            Heap Fetches: 0
+                                            Index Searches: 1
+                                            Buffers: shared hit=28
+                          ->  Hash  (cost=6.00..6.00 rows=300 width=21) (actual time=0.030..0.030 rows=300.00 loops=1)
+                                Buckets: 1024  Batches: 1  Memory Usage: 25kB
+                                Buffers: shared hit=3
+                                ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=21) (actual time=0.003..0.013 rows=300.00 loops=1)
+                                      Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=572
+Planning Time: 0.943 ms
+Execution Time: 19.040 ms
+=== R08 run 5 ===
+Limit  (cost=4995.64..4995.67 rows=10 width=57) (actual time=18.564..18.566 rows=10.00 loops=1)
+  Buffers: shared hit=2224
+  ->  Sort  (cost=4995.64..4996.39 rows=300 width=57) (actual time=18.563..18.564 rows=10.00 loops=1)
+        Sort Key: (sum(b.ticket_amount)) DESC
+        Sort Method: top-N heapsort  Memory: 26kB
+        Buffers: shared hit=2224
+        ->  GroupAggregate  (cost=4944.35..4989.16 rows=300 width=57) (actual time=18.161..18.544 rows=98.00 loops=1)
+              Group Key: m.title
+              Buffers: shared hit=2221
+              ->  Sort  (cost=4944.35..4954.62 rows=4106 width=26) (actual time=18.146..18.241 rows=5129.00 loops=1)
+                    Sort Key: m.title, b.booking_id
+                    Sort Method: quicksort  Memory: 442kB
+                    Buffers: shared hit=2221
+                    ->  Hash Join  (cost=276.06..4697.92 rows=4106 width=26) (actual time=0.453..15.865 rows=5129.00 loops=1)
+                          Hash Cond: (s.movie_id = m.movie_id)
+                          Buffers: shared hit=2215
+                          ->  Hash Join  (cost=266.31..4677.23 rows=4106 width=13) (actual time=0.419..15.419 rows=5129.00 loops=1)
+                                Hash Cond: (b.show_id = s.show_id)
+                                Buffers: shared hit=2212
+                                ->  Seq Scan on bookings b  (cost=0.00..4060.18 rows=133614 width=13) (actual time=0.004..9.915 rows=133568.00 loops=1)
+                                      Filter: ((status)::text = 'CONFIRMED'::text)
+                                      Rows Removed by Filter: 16526
+                                      Buffers: shared hit=2184
+                                ->  Hash  (cost=204.84..204.84 rows=4918 width=8) (actual time=0.406..0.406 rows=4899.00 loops=1)
+                                      Buckets: 8192  Batches: 1  Memory Usage: 256kB
+                                      Buffers: shared hit=28
+                                      ->  Index Only Scan using idx_shows_starts_at on shows s  (cost=0.42..204.84 rows=4918 width=8) (actual time=0.007..0.223 rows=4899.00 loops=1)
+                                            Index Cond: ((starts_at >= '2026-06-26 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-06-29 00:00:00+05:30'::timestamp with time zone))
+                                            Heap Fetches: 0
+                                            Index Searches: 1
+                                            Buffers: shared hit=28
+                          ->  Hash  (cost=6.00..6.00 rows=300 width=21) (actual time=0.030..0.030 rows=300.00 loops=1)
+                                Buckets: 1024  Batches: 1  Memory Usage: 25kB
+                                Buffers: shared hit=3
+                                ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=21) (actual time=0.003..0.014 rows=300.00 loops=1)
+                                      Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=572
+Planning Time: 0.918 ms
+Execution Time: 18.605 ms

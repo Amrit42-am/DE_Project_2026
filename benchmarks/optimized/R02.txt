@@ -1,0 +1,165 @@
+=== R02 run 1 ===
+Sort  (cost=33.37..33.38 rows=1 width=52) (actual time=0.744..0.745 rows=5.00 loops=1)
+  Sort Key: v.venue_name, s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=57 read=1
+  ->  Nested Loop  (cost=20.10..33.36 rows=1 width=52) (actual time=0.682..0.716 rows=5.00 loops=1)
+        Buffers: shared hit=51 read=1
+        ->  Hash Join  (cost=19.95..32.57 rows=4 width=31) (actual time=0.679..0.705 rows=16.00 loops=1)
+              Hash Cond: (sc.screen_id = s.screen_id)
+              Buffers: shared hit=19 read=1
+              ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=15) (actual time=0.002..0.017 rows=490.00 loops=1)
+                    Buffers: shared hit=4
+              ->  Hash  (cost=19.90..19.90 rows=4 width=24) (actual time=0.671..0.671 rows=16.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=15 read=1
+                    ->  Bitmap Heap Scan on shows s  (cost=4.47..19.90 rows=4 width=24) (actual time=0.636..0.664 rows=16.00 loops=1)
+                          Recheck Cond: ((movie_id = 2) AND (starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                          Heap Blocks: exact=13
+                          Buffers: shared hit=15 read=1
+                          ->  Bitmap Index Scan on idx_shows_movie_starts_at  (cost=0.00..4.47 rows=4 width=0) (actual time=0.624..0.624 rows=16.00 loops=1)
+                                Index Cond: ((movie_id = 2) AND (starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                                Index Searches: 1
+                                Buffers: shared hit=2 read=1
+        ->  Index Scan using venues_pkey on venues v  (cost=0.14..0.20 rows=1 width=29) (actual time=0.001..0.001 rows=0.31 loops=16)
+              Index Cond: (venue_id = sc.venue_id)
+              Filter: (city_id = 1)
+              Rows Removed by Filter: 1
+              Index Searches: 16
+              Buffers: shared hit=32
+Planning:
+  Buffers: shared hit=426
+Planning Time: 0.613 ms
+Execution Time: 0.776 ms
+=== R02 run 2 ===
+Sort  (cost=33.37..33.38 rows=1 width=52) (actual time=0.150..0.151 rows=5.00 loops=1)
+  Sort Key: v.venue_name, s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=58
+  ->  Nested Loop  (cost=20.10..33.36 rows=1 width=52) (actual time=0.054..0.113 rows=5.00 loops=1)
+        Buffers: shared hit=52
+        ->  Hash Join  (cost=19.95..32.57 rows=4 width=31) (actual time=0.051..0.097 rows=16.00 loops=1)
+              Hash Cond: (sc.screen_id = s.screen_id)
+              Buffers: shared hit=20
+              ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=15) (actual time=0.004..0.026 rows=490.00 loops=1)
+                    Buffers: shared hit=4
+              ->  Hash  (cost=19.90..19.90 rows=4 width=24) (actual time=0.040..0.041 rows=16.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=16
+                    ->  Bitmap Heap Scan on shows s  (cost=4.47..19.90 rows=4 width=24) (actual time=0.017..0.033 rows=16.00 loops=1)
+                          Recheck Cond: ((movie_id = 2) AND (starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                          Heap Blocks: exact=13
+                          Buffers: shared hit=16
+                          ->  Bitmap Index Scan on idx_shows_movie_starts_at  (cost=0.00..4.47 rows=4 width=0) (actual time=0.010..0.010 rows=16.00 loops=1)
+                                Index Cond: ((movie_id = 2) AND (starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                                Index Searches: 1
+                                Buffers: shared hit=3
+        ->  Index Scan using venues_pkey on venues v  (cost=0.14..0.20 rows=1 width=29) (actual time=0.001..0.001 rows=0.31 loops=16)
+              Index Cond: (venue_id = sc.venue_id)
+              Filter: (city_id = 1)
+              Rows Removed by Filter: 1
+              Index Searches: 16
+              Buffers: shared hit=32
+Planning:
+  Buffers: shared hit=426
+Planning Time: 0.753 ms
+Execution Time: 0.203 ms
+=== R02 run 3 ===
+Sort  (cost=33.37..33.38 rows=1 width=52) (actual time=0.095..0.096 rows=5.00 loops=1)
+  Sort Key: v.venue_name, s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=58
+  ->  Nested Loop  (cost=20.10..33.36 rows=1 width=52) (actual time=0.038..0.069 rows=5.00 loops=1)
+        Buffers: shared hit=52
+        ->  Hash Join  (cost=19.95..32.57 rows=4 width=31) (actual time=0.036..0.060 rows=16.00 loops=1)
+              Hash Cond: (sc.screen_id = s.screen_id)
+              Buffers: shared hit=20
+              ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=15) (actual time=0.002..0.013 rows=490.00 loops=1)
+                    Buffers: shared hit=4
+              ->  Hash  (cost=19.90..19.90 rows=4 width=24) (actual time=0.029..0.029 rows=16.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=16
+                    ->  Bitmap Heap Scan on shows s  (cost=4.47..19.90 rows=4 width=24) (actual time=0.013..0.024 rows=16.00 loops=1)
+                          Recheck Cond: ((movie_id = 2) AND (starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                          Heap Blocks: exact=13
+                          Buffers: shared hit=16
+                          ->  Bitmap Index Scan on idx_shows_movie_starts_at  (cost=0.00..4.47 rows=4 width=0) (actual time=0.008..0.008 rows=16.00 loops=1)
+                                Index Cond: ((movie_id = 2) AND (starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                                Index Searches: 1
+                                Buffers: shared hit=3
+        ->  Index Scan using venues_pkey on venues v  (cost=0.14..0.20 rows=1 width=29) (actual time=0.000..0.000 rows=0.31 loops=16)
+              Index Cond: (venue_id = sc.venue_id)
+              Filter: (city_id = 1)
+              Rows Removed by Filter: 1
+              Index Searches: 16
+              Buffers: shared hit=32
+Planning:
+  Buffers: shared hit=426
+Planning Time: 0.621 ms
+Execution Time: 0.128 ms
+=== R02 run 4 ===
+Sort  (cost=33.37..33.38 rows=1 width=52) (actual time=0.101..0.102 rows=5.00 loops=1)
+  Sort Key: v.venue_name, s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=58
+  ->  Nested Loop  (cost=20.10..33.36 rows=1 width=52) (actual time=0.040..0.073 rows=5.00 loops=1)
+        Buffers: shared hit=52
+        ->  Hash Join  (cost=19.95..32.57 rows=4 width=31) (actual time=0.038..0.063 rows=16.00 loops=1)
+              Hash Cond: (sc.screen_id = s.screen_id)
+              Buffers: shared hit=20
+              ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=15) (actual time=0.002..0.014 rows=490.00 loops=1)
+                    Buffers: shared hit=4
+              ->  Hash  (cost=19.90..19.90 rows=4 width=24) (actual time=0.031..0.031 rows=16.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=16
+                    ->  Bitmap Heap Scan on shows s  (cost=4.47..19.90 rows=4 width=24) (actual time=0.013..0.026 rows=16.00 loops=1)
+                          Recheck Cond: ((movie_id = 2) AND (starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                          Heap Blocks: exact=13
+                          Buffers: shared hit=16
+                          ->  Bitmap Index Scan on idx_shows_movie_starts_at  (cost=0.00..4.47 rows=4 width=0) (actual time=0.008..0.008 rows=16.00 loops=1)
+                                Index Cond: ((movie_id = 2) AND (starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                                Index Searches: 1
+                                Buffers: shared hit=3
+        ->  Index Scan using venues_pkey on venues v  (cost=0.14..0.20 rows=1 width=29) (actual time=0.000..0.000 rows=0.31 loops=16)
+              Index Cond: (venue_id = sc.venue_id)
+              Filter: (city_id = 1)
+              Rows Removed by Filter: 1
+              Index Searches: 16
+              Buffers: shared hit=32
+Planning:
+  Buffers: shared hit=426
+Planning Time: 0.852 ms
+Execution Time: 0.135 ms
+=== R02 run 5 ===
+Sort  (cost=33.37..33.38 rows=1 width=52) (actual time=0.098..0.099 rows=5.00 loops=1)
+  Sort Key: v.venue_name, s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=58
+  ->  Nested Loop  (cost=20.10..33.36 rows=1 width=52) (actual time=0.038..0.071 rows=5.00 loops=1)
+        Buffers: shared hit=52
+        ->  Hash Join  (cost=19.95..32.57 rows=4 width=31) (actual time=0.036..0.062 rows=16.00 loops=1)
+              Hash Cond: (sc.screen_id = s.screen_id)
+              Buffers: shared hit=20
+              ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=15) (actual time=0.003..0.015 rows=490.00 loops=1)
+                    Buffers: shared hit=4
+              ->  Hash  (cost=19.90..19.90 rows=4 width=24) (actual time=0.029..0.029 rows=16.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=16
+                    ->  Bitmap Heap Scan on shows s  (cost=4.47..19.90 rows=4 width=24) (actual time=0.013..0.025 rows=16.00 loops=1)
+                          Recheck Cond: ((movie_id = 2) AND (starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                          Heap Blocks: exact=13
+                          Buffers: shared hit=16
+                          ->  Bitmap Index Scan on idx_shows_movie_starts_at  (cost=0.00..4.47 rows=4 width=0) (actual time=0.008..0.008 rows=16.00 loops=1)
+                                Index Cond: ((movie_id = 2) AND (starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                                Index Searches: 1
+                                Buffers: shared hit=3
+        ->  Index Scan using venues_pkey on venues v  (cost=0.14..0.20 rows=1 width=29) (actual time=0.000..0.000 rows=0.31 loops=16)
+              Index Cond: (venue_id = sc.venue_id)
+              Filter: (city_id = 1)
+              Rows Removed by Filter: 1
+              Index Searches: 16
+              Buffers: shared hit=32
+Planning:
+  Buffers: shared hit=426
+Planning Time: 1.115 ms
+Execution Time: 0.133 ms
