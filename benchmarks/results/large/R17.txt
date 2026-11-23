@@ -1,0 +1,87 @@
+=== R17 run 1 ===
+Sort  (cost=11454.46..11454.94 rows=193 width=15) (actual time=9.050..9.052 rows=27.00 loops=1)
+  Sort Key: se.row_label, se.seat_number
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=1652 read=148
+  ->  Nested Loop Anti Join  (cost=1.29..11447.13 rows=193 width=15) (actual time=0.445..9.021 rows=27.00 loops=1)
+        Buffers: shared hit=1646 read=148
+        ->  Index Only Scan using idx_seats_screen_seat on seats se  (cost=0.43..11.91 rows=199 width=15) (actual time=0.350..0.352 rows=40.00 loops=1)
+              Index Cond: (screen_id = 101)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=2 read=2
+        ->  Nested Loop  (cost=0.86..58.79 rows=33 width=4) (actual time=0.217..0.217 rows=0.33 loops=40)
+              Buffers: shared hit=1644 read=146
+              ->  Index Only Scan using idx_booking_seats_seat_show on booking_seats bs  (cost=0.43..6.86 rows=109 width=8) (actual time=0.003..0.006 rows=9.75 loops=40)
+                    Index Cond: (seat_id = se.seat_id)
+                    Heap Fetches: 0
+                    Index Searches: 40
+                    Buffers: shared hit=226 read=4
+              ->  Index Scan using shows_pkey on shows s  (cost=0.43..0.48 rows=1 width=4) (actual time=0.021..0.021 rows=0.03 loops=390)
+                    Index Cond: (show_id = bs.show_id)
+                    Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                    Rows Removed by Filter: 1
+                    Index Searches: 390
+                    Buffers: shared hit=1418 read=142
+Planning:
+  Buffers: shared hit=480 read=20
+Planning Time: 1.810 ms
+Execution Time: 9.082 ms
+=== R17 run 2 ===
+Sort  (cost=11454.46..11454.94 rows=193 width=15) (actual time=0.486..0.487 rows=27.00 loops=1)
+  Sort Key: se.row_label, se.seat_number
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=1800
+  ->  Nested Loop Anti Join  (cost=1.29..11447.13 rows=193 width=15) (actual time=0.014..0.464 rows=27.00 loops=1)
+        Buffers: shared hit=1794
+        ->  Index Only Scan using idx_seats_screen_seat on seats se  (cost=0.43..11.91 rows=199 width=15) (actual time=0.006..0.008 rows=40.00 loops=1)
+              Index Cond: (screen_id = 101)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=4
+        ->  Nested Loop  (cost=0.86..58.79 rows=33 width=4) (actual time=0.011..0.011 rows=0.33 loops=40)
+              Buffers: shared hit=1790
+              ->  Index Only Scan using idx_booking_seats_seat_show on booking_seats bs  (cost=0.43..6.86 rows=109 width=8) (actual time=0.001..0.001 rows=9.75 loops=40)
+                    Index Cond: (seat_id = se.seat_id)
+                    Heap Fetches: 0
+                    Index Searches: 40
+                    Buffers: shared hit=230
+              ->  Index Scan using shows_pkey on shows s  (cost=0.43..0.48 rows=1 width=4) (actual time=0.001..0.001 rows=0.03 loops=390)
+                    Index Cond: (show_id = bs.show_id)
+                    Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                    Rows Removed by Filter: 1
+                    Index Searches: 390
+                    Buffers: shared hit=1560
+Planning:
+  Buffers: shared hit=500
+Planning Time: 0.794 ms
+Execution Time: 0.516 ms
+=== R17 run 3 ===
+Sort  (cost=11454.46..11454.94 rows=193 width=15) (actual time=0.430..0.431 rows=27.00 loops=1)
+  Sort Key: se.row_label, se.seat_number
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=1800
+  ->  Nested Loop Anti Join  (cost=1.29..11447.13 rows=193 width=15) (actual time=0.012..0.411 rows=27.00 loops=1)
+        Buffers: shared hit=1794
+        ->  Index Only Scan using idx_seats_screen_seat on seats se  (cost=0.43..11.91 rows=199 width=15) (actual time=0.005..0.006 rows=40.00 loops=1)
+              Index Cond: (screen_id = 101)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=4
+        ->  Nested Loop  (cost=0.86..58.79 rows=33 width=4) (actual time=0.010..0.010 rows=0.33 loops=40)
+              Buffers: shared hit=1790
+              ->  Index Only Scan using idx_booking_seats_seat_show on booking_seats bs  (cost=0.43..6.86 rows=109 width=8) (actual time=0.001..0.001 rows=9.75 loops=40)
+                    Index Cond: (seat_id = se.seat_id)
+                    Heap Fetches: 0
+                    Index Searches: 40
+                    Buffers: shared hit=230
+              ->  Index Scan using shows_pkey on shows s  (cost=0.43..0.48 rows=1 width=4) (actual time=0.001..0.001 rows=0.03 loops=390)
+                    Index Cond: (show_id = bs.show_id)
+                    Filter: ((starts_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                    Rows Removed by Filter: 1
+                    Index Searches: 390
+                    Buffers: shared hit=1560
+Planning:
+  Buffers: shared hit=500
+Planning Time: 0.730 ms
+Execution Time: 0.457 ms

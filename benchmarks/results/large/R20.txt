@@ -1,0 +1,99 @@
+=== R20 run 1 ===
+WindowAgg  (cost=81256.55..121429.77 rows=122660 width=68) (actual time=71.504..73.329 rows=30.00 loops=1)
+  Window: w1 AS (ORDER BY ((bookings.booked_at)::date))
+  Storage: Memory  Maximum Storage: 17kB
+  Buffers: shared hit=87332 read=4855
+  ->  Finalize GroupAggregate  (cost=81256.22..119589.87 rows=122660 width=36) (actual time=71.490..73.307 rows=30.00 loops=1)
+        Group Key: ((bookings.booked_at)::date)
+        Buffers: shared hit=87332 read=4855
+        ->  Gather Merge  (cost=81256.22..115542.09 rows=294384 width=36) (actual time=71.482..73.262 rows=90.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=87332 read=4855
+              ->  Sort  (cost=80256.20..80562.85 rows=122660 width=36) (actual time=69.814..69.815 rows=30.00 loops=3)
+                    Sort Key: ((bookings.booked_at)::date)
+                    Sort Method: quicksort  Memory: 27kB
+                    Buffers: shared hit=87332 read=4855
+                    Worker 0:  Sort Method: quicksort  Memory: 27kB
+                    Worker 1:  Sort Method: quicksort  Memory: 27kB
+                    ->  Partial HashAggregate  (cost=60708.89..66532.29 rows=122660 width=36) (actual time=69.703..69.800 rows=30.00 loops=3)
+                          Group Key: (bookings.booked_at)::date
+                          Planned Partitions: 8  Batches: 1  Memory Usage: 553kB
+                          Buffers: shared hit=87314 read=4855
+                          Worker 0:  Batches: 1  Memory Usage: 553kB
+                          Worker 1:  Batches: 1  Memory Usage: 553kB
+                          ->  Parallel Index Only Scan using idx_bookings_confirmed_booked_at on bookings  (cost=0.43..34577.16 rows=407910 width=10) (actual time=0.158..47.606 rows=327385.00 loops=3)
+                                Index Cond: ((booked_at >= '2026-06-01 00:00:00'::timestamp without time zone) AND (booked_at < '2026-07-01 00:00:00'::timestamp without time zone))
+                                Heap Fetches: 0
+                                Index Searches: 1
+                                Buffers: shared hit=87314 read=4855
+Planning:
+  Buffers: shared hit=354 read=3
+Planning Time: 0.856 ms
+Execution Time: 73.416 ms
+=== R20 run 2 ===
+WindowAgg  (cost=81256.55..121429.77 rows=122660 width=68) (actual time=61.367..62.686 rows=30.00 loops=1)
+  Window: w1 AS (ORDER BY ((bookings.booked_at)::date))
+  Storage: Memory  Maximum Storage: 17kB
+  Buffers: shared hit=92121
+  ->  Finalize GroupAggregate  (cost=81256.22..119589.87 rows=122660 width=36) (actual time=61.355..62.641 rows=30.00 loops=1)
+        Group Key: ((bookings.booked_at)::date)
+        Buffers: shared hit=92121
+        ->  Gather Merge  (cost=81256.22..115542.09 rows=294384 width=36) (actual time=61.348..62.617 rows=88.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=92121
+              ->  Sort  (cost=80256.20..80562.85 rows=122660 width=36) (actual time=56.536..56.537 rows=29.33 loops=3)
+                    Sort Key: ((bookings.booked_at)::date)
+                    Sort Method: quicksort  Memory: 27kB
+                    Buffers: shared hit=92121
+                    Worker 0:  Sort Method: quicksort  Memory: 27kB
+                    Worker 1:  Sort Method: quicksort  Memory: 27kB
+                    ->  Partial HashAggregate  (cost=60708.89..66532.29 rows=122660 width=36) (actual time=56.436..56.520 rows=29.33 loops=3)
+                          Group Key: (bookings.booked_at)::date
+                          Planned Partitions: 8  Batches: 1  Memory Usage: 553kB
+                          Buffers: shared hit=92103
+                          Worker 0:  Batches: 1  Memory Usage: 553kB
+                          Worker 1:  Batches: 1  Memory Usage: 553kB
+                          ->  Parallel Index Only Scan using idx_bookings_confirmed_booked_at on bookings  (cost=0.43..34577.16 rows=407910 width=10) (actual time=0.029..33.271 rows=327385.00 loops=3)
+                                Index Cond: ((booked_at >= '2026-06-01 00:00:00'::timestamp without time zone) AND (booked_at < '2026-07-01 00:00:00'::timestamp without time zone))
+                                Heap Fetches: 0
+                                Index Searches: 1
+                                Buffers: shared hit=92103
+Planning:
+  Buffers: shared hit=357
+Planning Time: 0.560 ms
+Execution Time: 62.782 ms
+=== R20 run 3 ===
+WindowAgg  (cost=81256.55..121429.77 rows=122660 width=68) (actual time=48.370..49.451 rows=30.00 loops=1)
+  Window: w1 AS (ORDER BY ((bookings.booked_at)::date))
+  Storage: Memory  Maximum Storage: 17kB
+  Buffers: shared hit=92168
+  ->  Finalize GroupAggregate  (cost=81256.22..119589.87 rows=122660 width=36) (actual time=48.359..49.433 rows=30.00 loops=1)
+        Group Key: ((bookings.booked_at)::date)
+        Buffers: shared hit=92168
+        ->  Gather Merge  (cost=81256.22..115542.09 rows=294384 width=36) (actual time=48.334..49.396 rows=90.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=92168
+              ->  Sort  (cost=80256.20..80562.85 rows=122660 width=36) (actual time=46.419..46.420 rows=30.00 loops=3)
+                    Sort Key: ((bookings.booked_at)::date)
+                    Sort Method: quicksort  Memory: 27kB
+                    Buffers: shared hit=92168
+                    Worker 0:  Sort Method: quicksort  Memory: 27kB
+                    Worker 1:  Sort Method: quicksort  Memory: 27kB
+                    ->  Partial HashAggregate  (cost=60708.89..66532.29 rows=122660 width=36) (actual time=46.339..46.407 rows=30.00 loops=3)
+                          Group Key: (bookings.booked_at)::date
+                          Planned Partitions: 8  Batches: 1  Memory Usage: 553kB
+                          Buffers: shared hit=92150
+                          Worker 0:  Batches: 1  Memory Usage: 553kB
+                          Worker 1:  Batches: 1  Memory Usage: 553kB
+                          ->  Parallel Index Only Scan using idx_bookings_confirmed_booked_at on bookings  (cost=0.43..34577.16 rows=407910 width=10) (actual time=0.027..27.366 rows=327385.00 loops=3)
+                                Index Cond: ((booked_at >= '2026-06-01 00:00:00'::timestamp without time zone) AND (booked_at < '2026-07-01 00:00:00'::timestamp without time zone))
+                                Heap Fetches: 0
+                                Index Searches: 1
+                                Buffers: shared hit=92150
+Planning:
+  Buffers: shared hit=357
+Planning Time: 0.585 ms
+Execution Time: 49.542 ms
