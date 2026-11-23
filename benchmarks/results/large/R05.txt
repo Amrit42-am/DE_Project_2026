@@ -1,0 +1,111 @@
+=== R05 run 1 ===
+Sort  (cost=43.23..43.24 rows=1 width=69) (actual time=1.138..1.139 rows=0.00 loops=1)
+  Sort Key: s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=8 read=12
+  ->  Nested Loop  (cost=1.71..43.22 rows=1 width=69) (actual time=1.129..1.130 rows=0.00 loops=1)
+        Buffers: shared hit=5 read=12
+        ->  Nested Loop  (cost=1.43..42.91 rows=1 width=46) (actual time=1.129..1.130 rows=0.00 loops=1)
+              Buffers: shared hit=5 read=12
+              ->  Nested Loop  (cost=1.14..42.60 rows=1 width=46) (actual time=1.129..1.130 rows=0.00 loops=1)
+                    Buffers: shared hit=5 read=12
+                    ->  Nested Loop  (cost=0.86..42.30 rows=1 width=29) (actual time=1.129..1.129 rows=0.00 loops=1)
+                          Buffers: shared hit=5 read=12
+                          ->  Index Only Scan using idx_bookings_customer_show_confirmed on bookings b  (cost=0.43..8.50 rows=4 width=17) (actual time=0.341..0.344 rows=3.00 loops=1)
+                                Index Cond: (customer_id = 1331)
+                                Heap Fetches: 0
+                                Index Searches: 1
+                                Buffers: shared hit=2 read=3
+                          ->  Index Scan using shows_pkey on shows s  (cost=0.43..8.45 rows=1 width=20) (actual time=0.261..0.261 rows=0.00 loops=3)
+                                Index Cond: (show_id = b.show_id)
+                                Filter: (starts_at >= '2026-07-01 00:00:00+05:30'::timestamp with time zone)
+                                Rows Removed by Filter: 1
+                                Index Searches: 3
+                                Buffers: shared hit=3 read=9
+                    ->  Index Scan using movies_pkey on movies m  (cost=0.28..0.30 rows=1 width=25) (never executed)
+                          Index Cond: (movie_id = s.movie_id)
+                          Index Searches: 0
+              ->  Index Scan using screens_pkey on screens sc  (cost=0.29..0.30 rows=1 width=8) (never executed)
+                    Index Cond: (screen_id = s.screen_id)
+                    Index Searches: 0
+        ->  Index Scan using venues_pkey on venues v  (cost=0.28..0.32 rows=1 width=31) (never executed)
+              Index Cond: (venue_id = sc.venue_id)
+              Index Searches: 0
+Planning:
+  Buffers: shared hit=700 read=9
+Planning Time: 2.251 ms
+Execution Time: 1.166 ms
+=== R05 run 2 ===
+Sort  (cost=43.23..43.24 rows=1 width=69) (actual time=0.030..0.030 rows=0.00 loops=1)
+  Sort Key: s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=20
+  ->  Nested Loop  (cost=1.71..43.22 rows=1 width=69) (actual time=0.023..0.024 rows=0.00 loops=1)
+        Buffers: shared hit=17
+        ->  Nested Loop  (cost=1.43..42.91 rows=1 width=46) (actual time=0.023..0.024 rows=0.00 loops=1)
+              Buffers: shared hit=17
+              ->  Nested Loop  (cost=1.14..42.60 rows=1 width=46) (actual time=0.023..0.023 rows=0.00 loops=1)
+                    Buffers: shared hit=17
+                    ->  Nested Loop  (cost=0.86..42.30 rows=1 width=29) (actual time=0.023..0.023 rows=0.00 loops=1)
+                          Buffers: shared hit=17
+                          ->  Index Only Scan using idx_bookings_customer_show_confirmed on bookings b  (cost=0.43..8.50 rows=4 width=17) (actual time=0.005..0.007 rows=3.00 loops=1)
+                                Index Cond: (customer_id = 1331)
+                                Heap Fetches: 0
+                                Index Searches: 1
+                                Buffers: shared hit=5
+                          ->  Index Scan using shows_pkey on shows s  (cost=0.43..8.45 rows=1 width=20) (actual time=0.005..0.005 rows=0.00 loops=3)
+                                Index Cond: (show_id = b.show_id)
+                                Filter: (starts_at >= '2026-07-01 00:00:00+05:30'::timestamp with time zone)
+                                Rows Removed by Filter: 1
+                                Index Searches: 3
+                                Buffers: shared hit=12
+                    ->  Index Scan using movies_pkey on movies m  (cost=0.28..0.30 rows=1 width=25) (never executed)
+                          Index Cond: (movie_id = s.movie_id)
+                          Index Searches: 0
+              ->  Index Scan using screens_pkey on screens sc  (cost=0.29..0.30 rows=1 width=8) (never executed)
+                    Index Cond: (screen_id = s.screen_id)
+                    Index Searches: 0
+        ->  Index Scan using venues_pkey on venues v  (cost=0.28..0.32 rows=1 width=31) (never executed)
+              Index Cond: (venue_id = sc.venue_id)
+              Index Searches: 0
+Planning:
+  Buffers: shared hit=709
+Planning Time: 1.287 ms
+Execution Time: 0.055 ms
+=== R05 run 3 ===
+Sort  (cost=43.23..43.24 rows=1 width=69) (actual time=0.031..0.032 rows=0.00 loops=1)
+  Sort Key: s.starts_at
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=20
+  ->  Nested Loop  (cost=1.71..43.22 rows=1 width=69) (actual time=0.024..0.024 rows=0.00 loops=1)
+        Buffers: shared hit=17
+        ->  Nested Loop  (cost=1.43..42.91 rows=1 width=46) (actual time=0.023..0.024 rows=0.00 loops=1)
+              Buffers: shared hit=17
+              ->  Nested Loop  (cost=1.14..42.60 rows=1 width=46) (actual time=0.023..0.024 rows=0.00 loops=1)
+                    Buffers: shared hit=17
+                    ->  Nested Loop  (cost=0.86..42.30 rows=1 width=29) (actual time=0.023..0.023 rows=0.00 loops=1)
+                          Buffers: shared hit=17
+                          ->  Index Only Scan using idx_bookings_customer_show_confirmed on bookings b  (cost=0.43..8.50 rows=4 width=17) (actual time=0.005..0.007 rows=3.00 loops=1)
+                                Index Cond: (customer_id = 1331)
+                                Heap Fetches: 0
+                                Index Searches: 1
+                                Buffers: shared hit=5
+                          ->  Index Scan using shows_pkey on shows s  (cost=0.43..8.45 rows=1 width=20) (actual time=0.005..0.005 rows=0.00 loops=3)
+                                Index Cond: (show_id = b.show_id)
+                                Filter: (starts_at >= '2026-07-01 00:00:00+05:30'::timestamp with time zone)
+                                Rows Removed by Filter: 1
+                                Index Searches: 3
+                                Buffers: shared hit=12
+                    ->  Index Scan using movies_pkey on movies m  (cost=0.28..0.30 rows=1 width=25) (never executed)
+                          Index Cond: (movie_id = s.movie_id)
+                          Index Searches: 0
+              ->  Index Scan using screens_pkey on screens sc  (cost=0.29..0.30 rows=1 width=8) (never executed)
+                    Index Cond: (screen_id = s.screen_id)
+                    Index Searches: 0
+        ->  Index Scan using venues_pkey on venues v  (cost=0.28..0.32 rows=1 width=31) (never executed)
+              Index Cond: (venue_id = sc.venue_id)
+              Index Searches: 0
+Planning:
+  Buffers: shared hit=709
+Planning Time: 1.514 ms
+Execution Time: 0.057 ms
